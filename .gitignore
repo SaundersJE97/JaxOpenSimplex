@@ -1,4 +1,5 @@
 /jaxopensimplexnoise.egg-info
 /dist
-/buid
+/build
+/build/lib
 */__pycache__
