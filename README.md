@@ -30,7 +30,7 @@ export PYTHONPATH = $PYTHONPATH:<dir>/JaxOpenSimplexNoise:
 | Implement 1d                  | ⬜ |
 | Implement 2d                  | ⬜ |
 | Implement 3d                  | ⬜ |
-| Implement 4d                  | ⬜ |
-| Add Tests and Benchmarks      | ✅ |
+| Implement 4d                  | ✅ |
+| Add Tests and Benchmarks      | ⬜ |
 
 # Other cool JAX Libraries
