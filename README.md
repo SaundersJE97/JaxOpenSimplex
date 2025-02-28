@@ -7,6 +7,11 @@ OpenSimplex Written in Jax
 ```
 
 # Installation
+## Using Pip
+```bash
+pip install JaxOpenSimplexNoise
+```
+## From Source
 ```bash
 cd <dir>
 git clone https://github.com/SaundersJE97/JaxOpenSimplexNoise.git
