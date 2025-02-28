@@ -1,16 +1,27 @@
+import math
+import random
+import time
 # from ctypes import c_int64, c_int32
 from typing import Union, Callable
 
+import chex
+import equinox as eqx
 import jax
-jax.config.update("jax_enable_x64", True)
 from jax import lax
 import jax.numpy as jnp
 import numpy as np
-from simplex_types import jnpFloat32, int_precision, long_precision, float_precision, double_precision
+import opensimplex
 from jaxtyping import Float, Array, Int
-# jax.config.update("jax_enable_x64", True)
+
+from utils.type_alias_jnp import jnpFloat32
+
+jax.config.update("jax_enable_x64", True)
 # jax.config.update("jax_disable_jit",False)
 
+int_precision = jnp.int32
+long_precision = jnp.int64
+float_precision = jnp.float32
+double_precision = jnp.float64
 initialized = False
 
 
@@ -414,9 +425,9 @@ if __name__ == "__main__":
         return simplex2jax4d.noise4_Fallback(seed=seed, x=x, y=y, z=z, w=w)
 
 
-    run: str = 'visualise'
+    run: str = 'eval_static_method'
     simplex2jax4d = Simplex2Jax4d()
-    # simplex_generator = opensimplex.OpenSimplex(seed=3)
+    simplex_generator = opensimplex.OpenSimplex(seed=3)
 
     if run == "eval_static_method":
         seed, _ = jax.random.split(jax.random.PRNGKey(seed=0))
@@ -430,43 +441,40 @@ if __name__ == "__main__":
         exit(1)
 
     if run == 'visualise':
-        import cv2
-
         scale = 10
         height, width = 300, 300
         height_px, width_px = jnp.arange(height) / scale, jnp.arange(width) / scale
         X, Y = jnp.meshgrid(height_px, width_px)
         x, y = X.flatten(), Y.flatten()
-        num_frames = 6000
+        num_frames = 600
 
         for frame_number in range(num_frames):
-            if frame_number % 100 == 0:
-                val = simplex2jax4d.noise4_Fallback(seed=jnp.ones(len(x)).astype(long_precision) * 3,
-                                                    x=x.astype(double_precision) / scale,
-                                                    y=y.astype(double_precision) / scale,
-                                                    z=jnp.ones(len(x)).astype(double_precision),
-                                                    w=jnp.ones(len(x)).astype(double_precision) + frame_number / num_frames)
+            val = simplex2jax4d.noise4_Fallback(seed=jnp.ones(len(x)).astype(long_precision) * 3,
+                                                x=x.astype(double_precision) / scale,
+                                                y=y.astype(double_precision) / scale,
+                                                z=jnp.ones(len(x)).astype(double_precision),
+                                                w=jnp.ones(len(x)).astype(double_precision) + frame_number / num_frames)
 
-                # val = (val + 1) / 2
-                # val = (val > 0.5).astype(float)
-                image = val.reshape(X.shape)
+            val = (val + 1) / 2
+            val = (val > 0.5).astype(float)
+            image = val.reshape(X.shape)
 
-                # gamma = 0.5
-                # corrected = jnp.power(val, gamma)
-                # val = jnp.clip(val , a_min=0.0, a_max=1.0)
+            # gamma = 0.5
+            # corrected = jnp.power(val, gamma)
+            # val = jnp.clip(val , a_min=0.0, a_max=1.0)
 
-                # p1, p99 = jnp.percentile(val, (30, 70))
-                # data = jnp.clip((val - p1) / (p99 - p1), 0, 1)
+            # p1, p99 = jnp.percentile(val, (30, 70))
+            # data = jnp.clip((val - p1) / (p99 - p1), 0, 1)
 
-                # val = (val > 0.5).astype(float)
+            # val = (val > 0.5).astype(float)
 
-                # val = jnp.clip(val, a_min=-0.5, a_max=0.5)
-                # print(jnp.max(val), jnp.min(val))
-                # val_normalized = ((val - (-0.5)) / ((0.5) - (-0.5))).astype(float_precision)
-                # print(jnp.max(val_normalized), jnp.min(val_normalized))
-                image = val.reshape(X.shape)
-                # image = cv2.resize(image, (300, 300))
-                cv2.imshow('Dynamic Grayscale Image with Simplex Noise', np.array(image))
+            # val = jnp.clip(val, a_min=-0.5, a_max=0.5)
+            # print(jnp.max(val), jnp.min(val))
+            # val_normalized = ((val - (-0.5)) / ((0.5) - (-0.5))).astype(float_precision)
+            # print(jnp.max(val_normalized), jnp.min(val_normalized))
+            image = val.reshape(X.shape)
+            # image = cv2.resize(image, (300, 300))
+            cv2.imshow('Dynamic Grayscale Image with Simplex Noise', image)
             if cv2.waitKey(25) == ord('q'):  # Wait for 100 ms or until 'q' is pressed
                 break
         cv2.destroyAllWindows()
