@@ -5,10 +5,10 @@ OpenSimplex Written in Jax
 ```python
 seed, _ = jax.random.split(jax.random.PRNGKey(seed=0))
 
-x = jnpFloat32([2_000, 2_000])
-y = jnpFloat32([-3_000, -3_000])
-z = jnpFloat32([5_000, 5_000])
-t = jnpFloat32([180, 180])
+x = jnp.array([2_000, 2_000])
+y = jnp.array([-3_000, -3_000])
+z = jnp.array([5_000, 5_000])
+t = jnp.array([180, 180])
 noise = Simplex2Jax4d.noise4_Fallback(seed, x, y, z, t)
 ```
 
