@@ -21,3 +21,5 @@ export PYTHONPATH = $PYTHONPATH:<dir>/JaxOpenSimplexNoise:
 | Implement 3d                  | ⬜ |
 | Implement 4d                  | ✅ |
 | Add Tests and Benchmarks      | ⬜ |
+
+# Other cool JAX Libraries
